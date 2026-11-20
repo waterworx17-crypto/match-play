@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Match Play">
+<meta name="theme-color" content="#f3efe4">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" href="apple-touch-icon.png">
+<link rel="manifest" href="manifest.json">
+<title>Match Play</title>
+<style id="css">
+:root{--bg:#f3efe4;--card:#fffdf7;--ink:#1c2a21;--muted:#6d7a70;--line:#e2dccb;--green:#1e5a3c;--green2:#2c7a52;--gold:#d4a72c;--red:#b4452f;--blue:#2d5f8a}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.35 -apple-system,BlinkMacSystemFont,"SF Pro Text",system-ui,sans-serif;font-variant-numeric:tabular-nums}
+#root{max-width:520px;margin:0 auto;padding:calc(14px + env(safe-area-inset-top)) 16px calc(40px + env(safe-area-inset-bottom))}
+button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
+input,select{font:inherit;color:inherit}
+.top{display:flex;align-items:center;justify-content:space-between;min-height:44px;margin-bottom:10px}
+.top h1{font-size:28px;margin:0;letter-spacing:-.5px}
+.top h2{font-size:18px;margin:0;text-align:center;flex:1}
+.icon{width:42px;height:42px;border-radius:21px;background:var(--card);border:1px solid var(--line);display:grid;place-items:center;font-size:18px}
+.hero{background:linear-gradient(160deg,var(--green),#123d28);color:#fff;border-radius:22px;padding:20px 18px 18px;position:relative;overflow:hidden}
+.hero:after{content:"";position:absolute;right:-30px;top:-30px;width:140px;height:140px;border-radius:50%;background:rgba(255,255,255,.06)}
+.hero .lbl{font-size:12px;letter-spacing:1.5px;text-transform:uppercase;opacity:.7}
+.hero .big{font-size:38px;font-weight:800;letter-spacing:-1px;margin:4px 0 2px}
+.hero .sub{opacity:.8}
+.pts{display:flex;justify-content:space-between;margin-top:16px;background:rgba(255,255,255,.1);border-radius:14px;padding:10px 14px}
+.pts div{text-align:center;flex:1}
+.pts b{display:block;font-size:26px}
+.pts span{font-size:13px;opacity:.75}
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;min-height:52px;border-radius:16px;font-weight:700;font-size:17px}
+.btn.pri{background:var(--gold);color:#2a2105}
+.btn.sec{background:var(--card);border:1px solid var(--line)}
+.btn.grn{background:var(--green);color:#fff}
+.btn.dng{background:#fbeae6;color:var(--red)}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.mt{margin-top:12px}.mt2{margin-top:22px}
+.sect{font-size:13px;text-transform:uppercase;letter-spacing:1.2px;color:var(--muted);margin:26px 4px 8px;font-weight:600}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:14px}
+.resume{background:#fff6dc;border:1px solid #ecd58d}
+table{width:100%;border-collapse:collapse}
+td,th{padding:7px 4px;text-align:center}
+th{font-size:13px;color:var(--muted);font-weight:600}
+td:first-child,th:first-child{text-align:left;color:var(--muted)}
+tr+tr td{border-top:1px solid var(--line)}
+.rhead{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px}
+.rhead b{font-size:17px}
+.tag{font-size:12px;padding:3px 8px;border-radius:10px;background:#e8efe9;color:var(--green);font-weight:600}
+.tag.gold{background:#fbf0cf;color:#7a5a00}
+.res{font-weight:700;color:var(--green)}
+.muted{color:var(--muted);font-size:14px}
+.win{font-weight:800}
+/* live */
+.status{text-align:center;font-weight:800;font-size:22px;padding:12px;border-radius:16px;background:var(--green);color:#fff}
+.status small{display:block;font-weight:500;font-size:13px;opacity:.8}
+.parrow{display:flex;align-items:center;justify-content:space-between;margin:14px 2px}
+.seg{display:flex;background:#e7e1d0;border-radius:12px;padding:3px;gap:3px}
+.seg button{padding:8px 14px;border-radius:9px;font-weight:600;min-width:46px}
+.seg button.on{background:var(--card);box-shadow:0 1px 3px rgba(0,0,0,.15)}
+.seg.full{width:100%}.seg.full button{flex:1}
+.pl{display:grid;grid-template-columns:1fr auto;align-items:center;gap:6px;margin-top:10px}
+.pl .nm{font-weight:800;font-size:19px}
+.step{display:flex;align-items:center;gap:6px}
+.step button{width:52px;height:52px;border-radius:26px;background:#e9e3d3;font-size:28px;font-weight:600}
+.step .n{width:56px;text-align:center;font-size:40px;font-weight:800}
+.chips{display:flex;gap:8px;align-items:center;flex-wrap:wrap;grid-column:1/-1}
+.chip{padding:6px 12px;border-radius:14px;border:1px solid var(--line);font-size:14px;font-weight:600;background:var(--card)}
+.chip.on{background:#f3e3a8;border-color:var(--gold)}
+.badge{font-size:13px;font-weight:700;padding:4px 10px;border-radius:12px;background:#eee}
+.b-2,.b-1{background:#fde6b0;color:#7a4b00}.b0{background:#e5efe8;color:var(--green)}.b1{background:#eee6e0;color:#6a4b3a}.b2{background:#f6ddd6;color:var(--red)}
+.strip{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-top:16px}
+.strip button{width:30px;height:30px;border-radius:15px;font-size:12px;font-weight:700;background:#e7e1d0}
+.strip .w0{background:var(--green);color:#fff}.strip .w1{background:var(--blue);color:#fff}.strip .w2{background:#b9b19b;color:#fff}
+.strip .cur{outline:3px solid var(--gold);outline-offset:1px}
+.nav{display:grid;grid-template-columns:1fr 2fr;gap:10px;margin-top:16px}
+label.f{display:block;margin-top:12px;font-size:13px;color:var(--muted);font-weight:600}
+.inp{width:100%;min-height:46px;border:1px solid var(--line);border-radius:12px;padding:10px 12px;background:var(--card);margin-top:5px;font-size:17px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.pcol h3{margin:16px 0 0;font-size:16px}
+.sc{overflow-x:auto}.sc table{font-size:14px;min-width:100%}.sc td,.sc th{padding:5px 3px}
+.sc td:first-child{position:sticky;left:0;background:var(--card)}
+.u{text-decoration:underline;text-underline-offset:3px}
+.link{color:var(--muted);text-decoration:underline;font-size:14px;display:block;margin:18px auto 0}
+.modal{position:fixed;inset:0;background:rgba(10,20,14,.45);display:flex;align-items:flex-end;justify-content:center;z-index:9}
+.modal .sheet{background:var(--bg);width:100%;max-width:520px;border-radius:22px 22px 0 0;padding:20px 16px calc(30px + env(safe-area-inset-bottom))}
+textarea.inp{min-height:110px;font-size:13px;font-family:ui-monospace,monospace}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#1c2a21;color:#fff;padding:10px 16px;border-radius:14px;font-size:14px;z-index:10}
+.sync{background:#fff2c9;border:1px solid #ecd58d;border-radius:14px;padding:10px 12px;display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;font-size:14px}
+.sync button{font-weight:700;color:var(--green)}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="application/json" id="state">{"title":"Spain '26","players":["JFS","ABC"],"updated":1,"rounds":[{"id":"r1","date":"2026-11-08","course":"Calanova","holes":9,"scores":[41,41],"winner":null,"margin":"","birdies":[[5],[]],"sandies":[1,0]},{"id":"r2","date":"2026-11-20","course":"Calanova","holes":18,"scores":[87,84],"winner":0,"margin":"2 up","birdies":[[14],[]],"sandies":[0,0]}]}</script>
+<script id="app">
+(function(){
+var KEY='golf-match-state', DKEY='golf-match-draft';
+var S=JSON.parse(document.getElementById('state').textContent);
+var dirty=false, art=null, view={n:'home'}, draft=null;
+try{var L=JSON.parse(localStorage.getItem(KEY)||'null'); if(L&&L.rounds){S=L;}}catch(e){}
+try{draft=JSON.parse(localStorage.getItem(DKEY)||'null');}catch(e){}
+var root=document.getElementById('root');
+function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]});}
+function P(i){return esc(S.players[i]);}
+function frac(p){if(p%1===0)return String(p);var w=Math.floor(p);return (w||'')+'½';}
+function fdate(d){try{return new Date(d+'T12:00').toLocaleDateString('en-US',{month:'short',day:'numeric'});}catch(e){return d;}}
+function today(){var d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
+function pts(r){return r.winner==null?[.5,.5]:r.winner===0?[1,0]:[0,1];}
+function sorted(){return S.rounds.slice().sort(function(a,b){return a.date<b.date?1:a.date>b.date?-1:0;});}
+function toast(t){var d=document.createElement('div');d.className='toast';d.textContent=t;document.body.appendChild(d);setTimeout(function(){d.remove();},2600);}
+function saveLocal(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}}
+function saveDraft(){try{draft?localStorage.setItem(DKEY,JSON.stringify(draft)):localStorage.removeItem(DKEY);}catch(e){}}
+function commit(){S.updated=Date.now();saveLocal();}
+
+/* ---------- stats ---------- */
+function season(){
+  var o={p:[0,0],w:[0,0,0],b:[0,0],s:[0,0],m:0,tot18:[[],[]]};
+  S.rounds.forEach(function(r){var p=pts(r);o.p[0]+=p[0];o.p[1]+=p[1];o.m+=r.holes/18;
+    if(r.winner==null)o.w[2]++;else o.w[r.winner]++;
+    for(var i=0;i<2;i++){o.b[i]+=(r.birdies[i]||[]).length;o.s[i]+=+r.sandies[i]||0;if(r.holes==18&&r.scores[i])o.tot18[i].push(+r.scores[i]);}});
+  return o;
+}
+function avg(a){return a.length?(a.reduce(function(x,y){return x+y;},0)/a.length).toFixed(1):'–';}
+function best(a){return a.length?Math.min.apply(null,a):'–';}
+
+/* ---------- match play helpers ---------- */
+function holeWin(h){if(h.manual!=null)return h.manual;return h.s[0]<h.s[1]?0:h.s[1]<h.s[0]?1:2;}
+function mstat(d){
+  var lead=0,thru=0,cl=null;
+  for(var i=0;i<d.holes;i++){var h=d.card[i];if(!h)break;var w=holeWin(h);if(w===0)lead++;else if(w===1)lead--;thru=i+1;
+    var rem=d.holes-thru;if(!cl&&Math.abs(lead)>rem){cl={w:lead>0?0:1,txt:rem?Math.abs(lead)+'&'+rem:Math.abs(lead)+' up'};}}
+  return {lead:lead,thru:thru,cl:cl};
+}
+function statusTxt(m,n){
+  if(m.cl)return P(m.cl.w)+' wins '+m.cl.txt;
+  if(!m.thru)return 'All square';
+  var t=m.lead===0?'All square':P(m.lead>0?0:1)+' '+Math.abs(m.lead)+' up';
+  if(n-m.thru>0&&Math.abs(m.lead)===n-m.thru&&m.lead!==0)t+=' · dormie';
+  return t;
+}
+function totals(d){var t=[0,0],par=0;d.card.forEach(function(h){if(h){t[0]+=h.s[0];t[1]+=h.s[1];par+=h.par;}});return {t:t,par:par};}
+var NM={'-3':'Albatross','-2':'Eagle','-1':'Birdie','0':'Par','1':'Bogey','2':'Double'};
+function rel(n){return n===0?'E':(n>0?'+':'')+n;}
+
+/* ---------- views ---------- */
+function render(){
+  var h=view.n==='home'?home():view.n==='round'?roundView():view.n==='live'?live():view.n==='form'?form():view.n==='settings'?settings():'';
+  root.innerHTML=h;window.scrollTo(0,view.keepScroll?window.scrollY:0);view.keepScroll=false;
+}
+function syncBar(){return '';}
+function home(){
+  var o=season(),d=o.p[0]-o.p[1];
+  var big=d===0?'All square':P(d>0?0:1)+' '+frac(Math.abs(d))+' up';
+  var h=syncBar()+'<div class="top"><h1>'+esc(S.title)+'</h1><button class="icon" data-a="settings" aria-label="Settings">⚙︎</button></div>';
+  h+='<div class="hero"><div class="lbl">Total match</div><div class="big">'+big+'</div><div class="sub">after '+frac(Math.round(o.m*2)/2)+' match'+(o.m===1?'':'es')+' · '+S.rounds.length+' round'+(S.rounds.length===1?'':'s')+'</div>'+
+     '<div class="pts"><div><b>'+frac(o.p[0])+'</b><span>'+P(0)+'</span></div><div><b>'+frac(o.p[1])+'</b><span>'+P(1)+'</span></div></div></div>';
+  if(draft){var m=mstat(draft);h+='<div class="card resume mt"><div class="rhead"><b>Round in progress</b><span class="tag gold">Hole '+(draft.cur+1)+'</span></div><div class="muted">'+esc(draft.course)+' · '+statusTxt(m,draft.holes)+(m.thru?' thru '+m.thru:'')+'</div><button class="btn grn mt" data-a="resume">Resume scoring ›</button></div>';}
+  else h+='<button class="btn pri mt" data-a="start">⛳ Start a round</button>';
+  h+='<button class="btn sec mt" data-a="add">+ Add a finished result</button>';
+  h+='<div class="sect">Season stats</div><div class="card"><table><tr><th></th><th>'+P(0)+'</th><th>'+P(1)+'</th></tr>'+
+     '<tr><td>Points</td><td class="win">'+frac(o.p[0])+'</td><td class="win">'+frac(o.p[1])+'</td></tr>'+
+     '<tr><td>Rounds won</td><td>'+o.w[0]+'</td><td>'+o.w[1]+'</td></tr>'+
+     '<tr><td>Halved</td><td>'+o.w[2]+'</td><td>'+o.w[2]+'</td></tr>'+
+     '<tr><td>Birdies</td><td>'+o.b[0]+'</td><td>'+o.b[1]+'</td></tr>'+
+     '<tr><td>Sandies</td><td>'+o.s[0]+'</td><td>'+o.s[1]+'</td></tr>'+
+     '<tr><td>Avg (18)</td><td>'+avg(o.tot18[0])+'</td><td>'+avg(o.tot18[1])+'</td></tr>'+
+     '<tr><td>Best (18)</td><td>'+best(o.tot18[0])+'</td><td>'+best(o.tot18[1])+'</td></tr></table></div>';
+  h+='<div class="sect">Rounds</div>';
+  if(!S.rounds.length)h+='<div class="card muted">No rounds yet.</div>';
+  sorted().forEach(function(r){h+=roundCard(r,true);});
+  return h;
+}
+function resTxt(r){return r.winner==null?'Halved':P(r.winner)+(r.margin?' '+esc(r.margin):' won');}
+function bird(r,i){var b=r.birdies[i]||[];return b.length+(b.length?' <span class="muted">('+b.join(', ')+')</span>':'');}
+function roundCard(r,tap){
+  var p=pts(r);
+  return '<div class="card mt" '+(tap?'data-a="open" data-id="'+r.id+'"':'')+'><div class="rhead"><b>'+fdate(r.date)+' · '+esc(r.course)+'</b><span class="tag">'+r.holes+' holes</span></div>'+
+  '<div class="res">'+resTxt(r)+'</div><table class="mt"><tr><th></th><th>'+P(0)+'</th><th>'+P(1)+'</th></tr>'+
+  '<tr><td>Score</td><td>'+(r.scores[0]||'–')+'</td><td>'+(r.scores[1]||'–')+'</td></tr>'+
+  '<tr><td>Match</td><td'+(p[0]>p[1]?' class="win"':'')+'>'+frac(p[0])+'</td><td'+(p[1]>p[0]?' class="win"':'')+'>'+frac(p[1])+'</td></tr>'+
+  '<tr><td>Birdies</td><td>'+bird(r,0)+'</td><td>'+bird(r,1)+'</td></tr>'+
+  '<tr><td>Sandy</td><td>'+(r.sandies[0]||0)+'</td><td>'+(r.sandies[1]||0)+'</td></tr></table></div>';
+}
+function roundView(){
+  var r=S.rounds.filter(function(x){return x.id===view.id;})[0];if(!r){view={n:'home'};return home();}
+  var h='<div class="top"><button class="icon" data-a="home">‹</button><h2>'+fdate(r.date)+'</h2><span style="width:42px"></span></div>'+roundCard(r,false);
+  if(r.card&&r.card.length){
+    var c=r.card,lead=0,rows=['<tr><td>Hole</td>','<tr><td>Par</td>','<tr><td>'+P(0)+'</td>','<tr><td>'+P(1)+'</td>','<tr><td>Match</td>'];
+    c.forEach(function(x,i){if(!x)return;var w=holeWin(x);if(w===0)lead++;else if(w===1)lead--;
+      rows[0]+='<th>'+(i+1)+'</th>';rows[1]+='<td class="muted">'+x.par+'</td>';
+      rows[2]+='<td'+(w===0?' class="win u"':'')+'>'+x.s[0]+(x.sandy&&x.sandy[0]?'ˢ':'')+'</td>';
+      rows[3]+='<td'+(w===1?' class="win u"':'')+'>'+x.s[1]+(x.sandy&&x.sandy[1]?'ˢ':'')+'</td>';
+      rows[4]+='<td class="muted">'+(lead===0?'AS':(lead>0?'+':'−')+Math.abs(lead))+'</td>';});
+    h+='<div class="sect">Scorecard</div><div class="card sc"><table>'+rows.join('</tr>')+'</tr></table><div class="muted mt">Underlined = hole won · ˢ = sandy · Match: + is '+P(0)+' up</div></div>';
+  }
+  h+='<div class="row2 mt2"><button class="btn sec" data-a="edit" data-id="'+r.id+'">Edit</button><button class="btn dng" data-a="del" data-id="'+r.id+'">Delete</button></div>';
+  return h;
+}
+
+/* live scoring */
+function ensureHole(i){
+  if(!draft.card[i]){var prev=draft.card[i-1];var par=draft.pars&&draft.pars[i]||4;draft.card[i]={par:par,s:[par,par],sandy:[false,false],manual:null};}
+  return draft.card[i];
+}
+function live(){
+  var d=draft;if(!d){view={n:'home'};return home();}
+  if(d.stage==='finish')return finish();
+  var h=ensureHole(d.cur),m=mstat(d),T=totals(d),w=holeWin(h);
+  var s='<div class="top"><button class="icon" data-a="home" aria-label="Back">‹</button><h2>'+esc(d.course)+' · Hole '+(d.cur+1)+'<div class="muted" style="font-weight:500">of '+d.holes+'</div></h2><span style="width:42px"></span></div>';
+  s+='<div class="status">'+statusTxt(m,d.holes)+'<small>'+(m.thru?'thru '+m.thru:'first tee')+'</small></div>';
+  s+='<div class="parrow"><b>Par</b><div class="seg">'+[3,4,5].map(function(p){return '<button class="'+(h.par===p?'on':'')+'" data-a="par" data-v="'+p+'">'+p+'</button>';}).join('')+'</div></div>';
+  for(var i=0;i<2;i++){var dif=h.s[i]-h.par;var key=Math.max(-2,Math.min(2,dif));
+    s+='<div class="card pl"><div><div class="nm">'+P(i)+'</div><div class="muted">Total '+T.t[i]+' ('+rel(T.t[i]-T.par)+')</div></div>'+
+      '<div class="step"><button data-a="st" data-p="'+i+'" data-v="-1">−</button><div class="n">'+h.s[i]+'</div><button data-a="st" data-p="'+i+'" data-v="1">+</button></div>'+
+      '<div class="chips"><span class="badge b'+key+'">'+(NM[dif]||(dif>0?'+'+dif:dif))+'</span><button class="chip'+(h.sandy[i]?' on':'')+'" data-a="sandy" data-p="'+i+'">🏖 Sandy</button></div></div>';}
+  s+='<div class="parrow"><b>Hole won by</b>'+(h.manual!=null?'<button class="muted" data-a="auto">reset to scores</button>':'<span class="muted">from scores</span>')+'</div>';
+  s+='<div class="seg full">'+[[0,P(0)],[2,'Halved'],[1,P(1)]].map(function(x){return '<button class="'+(w===x[0]?'on':'')+'" data-a="hw" data-v="'+x[0]+'">'+x[1]+'</button>';}).join('')+'</div>';
+  s+='<div class="nav"><button class="btn sec" data-a="prev"'+(d.cur?'':' disabled style="opacity:.4"')+'>‹ Prev</button>'+
+     (d.cur<d.holes-1?'<button class="btn grn" data-a="next">Next hole ›</button>':'<button class="btn pri" data-a="tofinish">Finish round ✓</button>')+'</div>';
+  if(m.cl&&d.cur<d.holes-1)s+='<button class="btn pri mt" data-a="tofinish">Match over — finish now</button>';
+  s+='<div class="strip">';for(var k=0;k<d.holes;k++){var c=d.card[k];s+='<button data-a="go" data-v="'+k+'" class="'+(c?'w'+holeWin(c):'')+(k===d.cur?' cur':'')+'">'+(k+1)+'</button>';}s+='</div>';
+  s+='<div class="muted" style="text-align:center;margin-top:8px">Green = '+P(0)+' · Blue = '+P(1)+' · Grey = halved</div>';
+  s+='<button class="link" data-a="discard">Discard this round</button>';
+  return s;
+}
+function finish(){
+  var d=draft,m=mstat(d),T=totals(d);
+  if(d.fin==null){var w=m.cl?m.cl.w:m.lead>0?0:m.lead<0?1:null;d.fin={winner:w,margin:m.cl?m.cl.txt:(m.lead?Math.abs(m.lead)+' up':'')};}
+  var b=[[],[]],sd=[0,0];d.card.forEach(function(h,i){if(!h)return;for(var p=0;p<2;p++){if(h.s[p]<h.par)b[p].push(i+1);if(h.sandy[p])sd[p]++;}});
+  var f=d.fin;
+  var s='<div class="top"><button class="icon" data-a="back2play">‹</button><h2>Finish round</h2><span style="width:42px"></span></div>';
+  s+='<div class="card"><table><tr><th></th><th>'+P(0)+'</th><th>'+P(1)+'</th></tr><tr><td>Score</td><td>'+T.t[0]+'</td><td>'+T.t[1]+'</td></tr><tr><td>Birdies</td><td>'+b[0].length+'</td><td>'+b[1].length+'</td></tr><tr><td>Sandies</td><td>'+sd[0]+'</td><td>'+sd[1]+'</td></tr><tr><td>Holes played</td><td colspan="2">'+m.thru+' of '+d.holes+'</td></tr></table></div>';
+  s+='<label class="f">Match winner</label><div class="seg full mt">'+[[0,P(0)],[null,'Halved'],[1,P(1)]].map(function(x){return '<button class="'+(f.winner===x[0]?'on':'')+'" data-a="fw" data-v="'+x[0]+'">'+x[1]+'</button>';}).join('')+'</div>';
+  if(f.winner!=null)s+='<label class="f">Margin (e.g. 2 up, 3&amp;2)<input class="inp" id="fmargin" value="'+esc(f.margin)+'"></label>';
+  s+='<p class="muted">Points: winner 1, halved ½ each. A 9-hole round counts as half a match in the total.</p>';
+  s+='<button class="btn pri mt" data-a="save-live">Save round</button>';
+  return s;
+}
+function form(){
+  var r=view.id?S.rounds.filter(function(x){return x.id===view.id;})[0]:null;
+  var v=r||{date:today(),course:(sorted()[0]||{}).course||'',holes:18,scores:['',''],winner:null,margin:'',birdies:[[],[]],sandies:[0,0]};
+  var f=view.f||(view.f={winner:v.winner,holes:v.holes});
+  var s='<div class="top"><button class="icon" data-a="'+(r?'open':'home')+'" data-id="'+(r?r.id:'')+'">‹</button><h2>'+(r?'Edit round':'Add result')+'</h2><span style="width:42px"></span></div>';
+  s+='<div class="grid2"><label class="f">Date<input class="inp" type="date" id="fd" value="'+esc(v.date)+'"></label><label class="f">Course<input class="inp" id="fc" value="'+esc(v.course)+'" placeholder="Calanova"></label></div>';
+  s+='<label class="f">Holes</label><div class="seg full mt">'+[9,18].map(function(n){return '<button class="'+(f.holes===n?'on':'')+'" data-a="fh" data-v="'+n+'">'+n+' holes</button>';}).join('')+'</div>';
+  s+='<label class="f">Match winner</label><div class="seg full mt">'+[[0,P(0)],[null,'Halved'],[1,P(1)]].map(function(x){return '<button class="'+(f.winner===x[0]?'on':'')+'" data-a="fw2" data-v="'+x[0]+'">'+x[1]+'</button>';}).join('')+'</div>';
+  s+='<label class="f">Margin (optional, e.g. 2 up, 3&amp;2)<input class="inp" id="fm" value="'+esc(v.margin)+'"></label>';
+  s+='<div class="grid2">';
+  for(var i=0;i<2;i++){s+='<div class="pcol"><h3>'+P(i)+'</h3><label class="f">Score<input class="inp" id="fs'+i+'" inputmode="numeric" value="'+esc(v.scores[i])+'"></label>'+
+    '<label class="f">Birdie holes<input class="inp" id="fb'+i+'" inputmode="text" placeholder="e.g. 5, 14" value="'+esc((v.birdies[i]||[]).join(', '))+'"></label>'+
+    '<label class="f">Sandies<input class="inp" id="fy'+i+'" inputmode="numeric" value="'+esc(v.sandies[i]||0)+'"></label></div>';}
+  s+='</div><button class="btn pri mt2" data-a="save-form">Save</button>';
+  return s;
+}
+function settings(){
+  var s='<div class="top"><button class="icon" data-a="home">‹</button><h2>Settings</h2><span style="width:42px"></span></div>';
+  s+='<label class="f">Match name<input class="inp" id="st" value="'+esc(S.title)+'"></label><div class="grid2"><label class="f">Player 1<input class="inp" id="p0" value="'+P(0)+'"></label><label class="f">Player 2<input class="inp" id="p1" value="'+P(1)+'"></label></div>';
+  s+='<button class="btn pri mt2" data-a="save-settings">Save</button>';
+  s+='<div class="sect">Backup</div><p class="muted">Rounds are saved on this phone. Copy a backup now and then (paste it into Notes), and use Restore to move rounds to another phone.</p>';
+  s+='<button class="btn sec" data-a="backup">Copy backup</button>';
+  s+='<label class="f">Restore from backup<textarea class="inp" id="rst" placeholder="Paste a backup here"></textarea></label><button class="btn sec mt" data-a="restore">Restore</button>';
+  s+='<button class="btn dng mt2" data-a="newseason">Start a new match (clear all rounds)</button>';
+  return s;
+}
+function modal(text,okLabel,fn){
+  var m=document.createElement('div');m.className='modal';m.innerHTML='<div class="sheet"><p style="font-size:17px;margin:0 0 16px">'+text+'</p><button class="btn dng" id="mok">'+okLabel+'</button><button class="btn sec mt" id="mno">Cancel</button></div>';
+  document.body.appendChild(m);m.querySelector('#mok').onclick=function(){m.remove();fn();};m.querySelector('#mno').onclick=function(){m.remove();};m.onclick=function(e){if(e.target===m)m.remove();};
+}
+function ints(s){return String(s||'').split(/[^0-9]+/).filter(Boolean).map(Number).filter(function(n){return n>0&&n<=18;});}
+function uid(){return 'r'+Date.now().toString(36)+Math.random().toString(36).slice(2,6);}
+
+/* setup sheet for a new round */
+function startSheet(){
+  var last=(sorted()[0]||{}).course||'';
+  var m=document.createElement('div');m.className='modal';
+  m.innerHTML='<div class="sheet"><h2 style="margin:0 0 6px">New round</h2><label class="f">Course<input class="inp" id="nc" value="'+esc(last)+'"></label><label class="f">Date<input class="inp" type="date" id="nd" value="'+today()+'"></label><label class="f">Holes</label><div class="seg full mt" id="nh"><button data-v="9">9 holes</button><button class="on" data-v="18">18 holes</button></div><button class="btn pri mt2" id="ngo">Tee off ⛳</button><button class="btn sec mt" id="nx">Cancel</button></div>';
+  document.body.appendChild(m);var holes=18;
+  m.querySelectorAll('#nh button').forEach(function(b){b.onclick=function(){holes=+b.dataset.v;m.querySelectorAll('#nh button').forEach(function(x){x.classList.toggle('on',x===b);});};});
+  m.querySelector('#nx').onclick=function(){m.remove();};
+  m.querySelector('#ngo').onclick=function(){
+    var course=m.querySelector('#nc').value.trim()||'Golf';
+    var prev=sorted().filter(function(r){return r.course===course&&r.card;})[0];
+    draft={course:course,date:m.querySelector('#nd').value||today(),holes:holes,cur:0,card:[],pars:prev?prev.card.map(function(h){return h&&h.par;}):null,stage:'play'};
+    saveDraft();m.remove();view={n:'live'};render();};
+}
+
+root.addEventListener('click',function(e){
+  var t=e.target.closest('[data-a]');if(!t)return;var a=t.dataset.a,id=t.dataset.id,v=t.dataset.v;
+  var h=draft&&draft.card&&draft.card[draft.cur];
+  switch(a){
+  case 'home':view={n:'home'};break;
+  case 'settings':view={n:'settings'};break;
+  case 'open':view={n:'round',id:id};break;
+  case 'start':startSheet();return;
+  case 'resume':view={n:'live'};break;
+  case 'add':view={n:'form'};break;
+  case 'edit':view={n:'form',id:id};break;
+  case 'del':modal('Delete this round?','Delete',function(){S.rounds=S.rounds.filter(function(r){return r.id!==id;});commit();view={n:'home'};render();});return;
+  case 'par':var np=+v;for(var i=0;i<2;i++)if(h.s[i]===h.par)h.s[i]=np;h.par=np;draft.pars=draft.pars||[];draft.pars[draft.cur]=np;view.keepScroll=true;break;
+  case 'st':var p=+t.dataset.p;h.s[p]=Math.max(1,Math.min(15,h.s[p]+(+v)));view.keepScroll=true;break;
+  case 'sandy':h.sandy[+t.dataset.p]=!h.sandy[+t.dataset.p];view.keepScroll=true;break;
+  case 'hw':h.manual=+v;view.keepScroll=true;break;
+  case 'auto':h.manual=null;view.keepScroll=true;break;
+  case 'prev':if(draft.cur>0)draft.cur--;break;
+  case 'next':draft.cur++;break;
+  case 'go':draft.cur=+v;break;
+  case 'tofinish':draft.stage='finish';draft.fin=null;break;
+  case 'back2play':draft.stage='play';break;
+  case 'fw':var fm=document.getElementById('fmargin');if(fm)draft.fin.margin=fm.value;draft.fin.winner=v==='null'?null:+v;break;
+  case 'discard':modal('Discard this round? Scores entered so far will be lost.','Discard',function(){draft=null;saveDraft();view={n:'home'};render();});return;
+  case 'save-live':
+    var d=draft,m=mstat(d),T=totals(d),b=[[],[]],sd=[0,0];var fmi=document.getElementById('fmargin');if(fmi)d.fin.margin=fmi.value.trim();
+    d.card.forEach(function(x,i){if(!x)return;for(var q=0;q<2;q++){if(x.s[q]<x.par)b[q].push(i+1);if(x.sandy[q])sd[q]++;}});
+    S.rounds.push({id:uid(),date:d.date,course:d.course,holes:d.holes,scores:T.t,winner:d.fin.winner,margin:d.fin.winner==null?'':d.fin.margin,birdies:b,sandies:sd,card:d.card.slice(0,m.thru||d.card.length)});
+    draft=null;saveDraft();view={n:'home'};commit();toast('Round saved');break;
+  case 'fh':view.f.holes=+v;keepForm();break;
+  case 'fw2':view.f.winner=v==='null'?null:+v;keepForm();break;
+  case 'save-form':
+    var r=view.id?S.rounds.filter(function(x){return x.id===view.id;})[0]:null;
+    var o={date:val('fd')||today(),course:val('fc')||'Golf',holes:view.f.holes,scores:[+val('fs0')||0,+val('fs1')||0],winner:view.f.winner,margin:view.f.winner==null?'':val('fm'),birdies:[ints(val('fb0')),ints(val('fb1'))],sandies:[+val('fy0')||0,+val('fy1')||0]};
+    if(r){Object.keys(o).forEach(function(k){r[k]=o[k];});view={n:'round',id:r.id};}else{o.id=uid();S.rounds.push(o);view={n:'home'};}
+    commit();toast('Saved');break;
+  case 'save-settings':S.title=val('st')||S.title;S.players=[val('p0')||S.players[0],val('p1')||S.players[1]];commit();view={n:'home'};toast('Saved');break;
+  case 'backup':
+    var txt=JSON.stringify(S);
+    if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(txt).then(function(){toast('Backup copied — paste it into Notes');},function(){showBackup(txt);});}else showBackup(txt);
+    return;
+  case 'restore':
+    try{var R=JSON.parse(val('rst'));if(!R||!Array.isArray(R.rounds)||!R.players)throw 0;
+      modal('Replace the rounds on this phone with the backup ('+R.rounds.length+' rounds)?','Restore',function(){S=R;commit();view={n:'home'};render();toast('Restored');});}
+    catch(e){toast('That doesn\'t look like a backup');}
+    return;
+  case 'newseason':modal('Clear all rounds and start a new match?','Clear rounds',function(){S.rounds=[];commit();view={n:'home'};render();});return;
+  default:return;
+  }
+  if(draft)saveDraft();render();
+});
+function showBackup(txt){var m=document.createElement('div');m.className='modal';m.innerHTML='<div class="sheet"><p>Select all and copy:</p><textarea class="inp" readonly>'+esc(txt)+'</textarea><button class="btn sec mt">Close</button></div>';document.body.appendChild(m);m.querySelector('textarea').select();m.querySelector('button').onclick=function(){m.remove();};}
+function val(id){var el=document.getElementById(id);return el?el.value.trim():'';}
+var formCache={};
+function keepForm(){['fd','fc','fm','fs0','fs1','fb0','fb1','fy0','fy1'].forEach(function(k){formCache[k]=val(k);});view.keepScroll=true;setTimeout(function(){Object.keys(formCache).forEach(function(k){var el=document.getElementById(k);if(el)el.value=formCache[k];});formCache={};},0);}
+saveLocal();
+render();
+})();
+</script>
+</body>
+</html>
